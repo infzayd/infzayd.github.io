@@ -167,6 +167,20 @@
       "description": "Carnotaurus, meaning 'meat-eating bull', had distinctive horns above its eyes. It was one of the fastest large theropods, with powerful legs built for speed. Its tiny arms were even smaller than T. Rex's, making them nearly vestigial.",
       "funFact": "Carnotaurus had the shortest arms relative to body size of any large carnivorous dinosaur!",
       "emoji": "🐂"
+    },
+    {
+      "id": 13,
+      "name": "Manyakosaurus",
+      "scientificName": "Mustafars Feliksei Harounis",
+      "era": "Today",
+      "period": "0 years ago",
+      "location": "Germany",
+      "length": "1 - 2 meters",
+      "weight": "30 - 100 kg",
+      "diet": "Carnivore",
+      "description": "They're very weird.",
+      "funFact": "Feliks is the biggest gooner in world!",
+      "emoji": "🐕"
     }
   ]
 }
