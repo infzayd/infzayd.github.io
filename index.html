@@ -106,6 +106,13 @@
             letter-spacing: 2px;
         }
 
+        .dino-count {
+            margin-top: 10px;
+            font-size: 16px;
+            color: #d4af37;
+            font-weight: bold;
+        }
+
         .controls {
             margin-bottom: 40px;
             display: flex;
@@ -261,6 +268,18 @@
             color: #d4af37;
             font-size: 14px;
             font-weight: bold;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 60px 20px;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .loading-emoji {
+            font-size: 64px;
+            margin-bottom: 20px;
+            animation: glow 2s ease-in-out infinite;
         }
 
         .no-results {
@@ -501,6 +520,7 @@
             <div class="header-emoji">🦕</div>
             <h1 class="title">DINOSAURIA</h1>
             <p class="subtitle">Exploring the Mesozoic Era's Magnificent Beasts</p>
+            <p class="dino-count" id="dinoCount">Loading dinosaurs...</p>
         </header>
 
         <div class="controls">
@@ -512,12 +532,14 @@
                 <input type="text" id="searchInput" class="search-input" placeholder="Search dinosaurs...">
             </div>
             
-            <div class="filter-buttons">
+            <div class="filter-buttons" id="filterButtons">
                 <button class="era-badge active" data-era="all">All Eras</button>
-                <button class="era-badge" data-era="Late Cretaceous">Late Cretaceous</button>
-                <button class="era-badge" data-era="Late Jurassic">Late Jurassic</button>
-                <button class="era-badge" data-era="Mid Cretaceous">Mid Cretaceous</button>
             </div>
+        </div>
+
+        <div id="loadingMessage" class="loading">
+            <div class="loading-emoji">🦕</div>
+            <h3 style="font-family: 'Cinzel', serif; font-size: 28px; color: #d4af37;">Loading Dinosaurs...</h3>
         </div>
 
         <div id="dinoGrid" class="dino-grid"></div>
@@ -537,121 +559,7 @@
     </div>
 
     <script>
-        const dinosaurs = [
-            {
-                id: 1,
-                name: "Tyrannosaurus Rex",
-                scientificName: "Tyrannosaurus rex",
-                era: "Late Cretaceous",
-                period: "68-66 million years ago",
-                location: "North America",
-                length: "12-13 meters",
-                weight: "8,000-14,000 kg",
-                diet: "Carnivore",
-                description: "The most famous dinosaur, T. Rex was one of the largest land carnivores of all time. With massive jaws capable of exerting up to 57,000 newtons of force, it could crush bone with ease. Despite its fearsome reputation, recent studies suggest T. Rex may have been covered in primitive feathers.",
-                funFact: "T. Rex had excellent vision and could see better than a hawk, making it a formidable predator.",
-                emoji: "🦖"
-            },
-            {
-                id: 2,
-                name: "Triceratops",
-                scientificName: "Triceratops horridus",
-                era: "Late Cretaceous",
-                period: "68-66 million years ago",
-                location: "North America",
-                length: "8-9 meters",
-                weight: "6,000-12,000 kg",
-                diet: "Herbivore",
-                description: "With its three distinctive horns and large bony frill, Triceratops is one of the most recognizable dinosaurs. The frill likely served multiple purposes: defense, display, and temperature regulation. These massive herbivores traveled in herds for protection.",
-                funFact: "A Triceratops frill could grow up to 2 meters wide, making up nearly a third of its entire body length!",
-                emoji: "🦏"
-            },
-            {
-                id: 3,
-                name: "Velociraptor",
-                scientificName: "Velociraptor mongoliensis",
-                era: "Late Cretaceous",
-                period: "75-71 million years ago",
-                location: "Mongolia, China",
-                length: "2 meters",
-                weight: "15-20 kg",
-                diet: "Carnivore",
-                description: "Contrary to popular media portrayals, Velociraptors were actually quite small - about the size of a turkey. However, they were intelligent pack hunters with a large, sickle-shaped claw on each foot. Recent fossil evidence confirms they had feathers.",
-                funFact: "Velociraptors were actually much smaller than depicted in movies - only about 2 feet tall at the hip!",
-                emoji: "🦅"
-            },
-            {
-                id: 4,
-                name: "Brachiosaurus",
-                scientificName: "Brachiosaurus altithorax",
-                era: "Late Jurassic",
-                period: "154-153 million years ago",
-                location: "North America",
-                length: "25 meters",
-                weight: "56,000 kg",
-                diet: "Herbivore",
-                description: "One of the tallest dinosaurs, Brachiosaurus had front legs longer than its hind legs, giving it a giraffe-like stance. This massive sauropod could reach vegetation up to 13 meters high. Its large nostrils on top of its head led early paleontologists to believe it was aquatic.",
-                funFact: "Despite its enormous size, Brachiosaurus had a brain the size of a cat's!",
-                emoji: "🦕"
-            },
-            {
-                id: 5,
-                name: "Stegosaurus",
-                scientificName: "Stegosaurus stenops",
-                era: "Late Jurassic",
-                period: "155-150 million years ago",
-                location: "North America",
-                length: "9 meters",
-                weight: "5,000 kg",
-                diet: "Herbivore",
-                description: "Famous for its distinctive double row of large bony plates along its back and spiked tail, Stegosaurus was a slow-moving herbivore. The plates may have been used for temperature regulation and display. Its tail spikes, called thagomizers, were formidable weapons against predators.",
-                funFact: "Stegosaurus had a brain the size of a walnut, one of the smallest brain-to-body ratios of any dinosaur!",
-                emoji: "🦎"
-            },
-            {
-                id: 6,
-                name: "Pteranodon",
-                scientificName: "Pteranodon longiceps",
-                era: "Late Cretaceous",
-                period: "86-84 million years ago",
-                location: "North America",
-                length: "6 meter wingspan",
-                weight: "20-25 kg",
-                diet: "Piscivore",
-                description: "Though not technically a dinosaur but a pterosaur, Pteranodon was one of the largest flying reptiles. With its distinctive head crest and toothless beak, it soared over ancient seas hunting fish. Its hollow bones and lightweight build allowed for efficient flight despite its impressive size.",
-                funFact: "Pteranodon's wingspan was larger than a small airplane, yet it weighed less than a large dog!",
-                emoji: "🦇"
-            },
-            {
-                id: 7,
-                name: "Spinosaurus",
-                scientificName: "Spinosaurus aegyptiacus",
-                era: "Mid Cretaceous",
-                period: "112-93 million years ago",
-                location: "North Africa",
-                length: "15 meters",
-                weight: "7,000-20,000 kg",
-                diet: "Carnivore/Piscivore",
-                description: "The largest known carnivorous dinosaur, Spinosaurus had a distinctive sail-like structure on its back formed by elongated vertebrae. Recent discoveries suggest it was semi-aquatic, spending much of its time in water hunting fish with its crocodile-like snout.",
-                funFact: "Spinosaurus is the only known dinosaur adapted for a semi-aquatic lifestyle, with paddle-like feet and dense bones!",
-                emoji: "🐊"
-            },
-            {
-                id: 8,
-                name: "Ankylosaurus",
-                scientificName: "Ankylosaurus magniventris",
-                era: "Late Cretaceous",
-                period: "68-66 million years ago",
-                location: "North America",
-                length: "6-8 meters",
-                weight: "4,000-8,000 kg",
-                diet: "Herbivore",
-                description: "Built like a living tank, Ankylosaurus was covered in thick armor plates and had a massive club at the end of its tail. This club could swing with enough force to break bones. Its armor was so effective that even T. Rex would have struggled to penetrate it.",
-                funFact: "Ankylosaurus's tail club could swing at speeds up to 40 mph, delivering a bone-crushing blow!",
-                emoji: "🛡️"
-            }
-        ];
-
+        let dinosaurs = [];
         let selectedEra = 'all';
         let searchQuery = '';
 
@@ -663,9 +571,39 @@
             chevronRight: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>'
         };
 
-        function init() {
-            renderDinosaurs();
-            setupEventListeners();
+        // Load dinosaur data from JSON
+        async function loadDinosaurs() {
+            try {
+                const response = await fetch('dinosaurs.json');
+                const data = await response.json();
+                dinosaurs = data.dinosaurs;
+                
+                document.getElementById('loadingMessage').style.display = 'none';
+                document.getElementById('dinoCount').textContent = `${dinosaurs.length} Prehistoric Species`;
+                
+                generateEraFilters();
+                setupEventListeners();
+                renderDinosaurs();
+            } catch (error) {
+                console.error('Error loading dinosaurs:', error);
+                document.getElementById('loadingMessage').innerHTML = `
+                    <div class="no-results-emoji">⚠️</div>
+                    <h3 style="font-family: 'Cinzel', serif; font-size: 28px; color: #d4af37;">Error Loading Data</h3>
+                    <p style="font-size: 18px; color: #c4b5a0;">Please make sure dinosaurs.json is in the same folder as this HTML file.</p>
+                `;
+            }
+        }
+
+        // Generate era filter buttons dynamically
+        function generateEraFilters() {
+            const eras = ['all', ...new Set(dinosaurs.map(d => d.era))];
+            const filterButtons = document.getElementById('filterButtons');
+            
+            filterButtons.innerHTML = eras.map(era => `
+                <button class="era-badge ${era === 'all' ? 'active' : ''}" data-era="${era}">
+                    ${era === 'all' ? 'All Eras' : era}
+                </button>
+            `).join('');
         }
 
         function setupEventListeners() {
@@ -674,13 +612,13 @@
                 renderDinosaurs();
             });
 
-            document.querySelectorAll('.era-badge').forEach(button => {
-                button.addEventListener('click', () => {
+            document.getElementById('filterButtons').addEventListener('click', (e) => {
+                if (e.target.classList.contains('era-badge')) {
                     document.querySelectorAll('.era-badge').forEach(btn => btn.classList.remove('active'));
-                    button.classList.add('active');
-                    selectedEra = button.dataset.era;
+                    e.target.classList.add('active');
+                    selectedEra = e.target.dataset.era;
                     renderDinosaurs();
-                });
+                }
             });
 
             document.getElementById('modal').addEventListener('click', (e) => {
@@ -800,7 +738,8 @@
             document.body.style.overflow = 'auto';
         }
 
-        document.addEventListener('DOMContentLoaded', init);
+        // Load dinosaurs when page loads
+        document.addEventListener('DOMContentLoaded', loadDinosaurs);
     </script>
 </body>
 </html>
